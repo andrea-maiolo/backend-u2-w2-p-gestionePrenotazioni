@@ -1,23 +1,36 @@
 package andream.gestioneprenotazioni.entities;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.util.UUID;
 
-
+@Entity
+@Table(name = "employees")
 public class Employee {
+    @Id
+    @GeneratedValue
     private UUID id;
     private String name;
     private String surname;
     private String username;
     private String email;
+    private String avatarUrl;
+//
+//    @OneToMany
+//    private List<Reservation> reservation;
 
     public Employee() {
     }
 
-    public Employee(String email, String username, String surname, String name) {
+    public Employee(String email, String username, String surname, String name, String avatarUrl) {
         this.email = email;
         this.username = username;
         this.surname = surname;
         this.name = name;
+        this.avatarUrl = avatarUrl;
     }
 
     public UUID getId() {
@@ -30,6 +43,14 @@ public class Employee {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public String getSurname() {

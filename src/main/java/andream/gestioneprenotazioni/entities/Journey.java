@@ -1,15 +1,24 @@
 package andream.gestioneprenotazioni.entities;
 
 import andream.gestioneprenotazioni.enums.JourneyState;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
+@Entity
+@Table(name = "journeys")
 public class Journey {
+    @Id
+    @GeneratedValue
     private UUID id;
     private String destination;
     private LocalDate startDate;
+    @Enumerated(EnumType.STRING)
     private JourneyState state;
+
+//    @OneToMany
+//    private List<Reservation> reservation;
 
     public Journey() {
     }
