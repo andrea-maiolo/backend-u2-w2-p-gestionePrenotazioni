@@ -18,9 +18,7 @@ public class Employee {
     private String username;
     private String email;
     private String avatarUrl;
-//
-//    @OneToMany
-//    private List<Reservation> reservation;
+
 
     public Employee() {
     }

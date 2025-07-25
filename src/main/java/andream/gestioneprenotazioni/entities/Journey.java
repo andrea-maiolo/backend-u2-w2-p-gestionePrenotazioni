@@ -17,9 +17,6 @@ public class Journey {
     @Enumerated(EnumType.STRING)
     private JourneyState state;
 
-//    @OneToMany
-//    private List<Reservation> reservation;
-
     public Journey() {
     }
 
