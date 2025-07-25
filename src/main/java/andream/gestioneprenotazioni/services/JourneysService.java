@@ -4,6 +4,7 @@ import andream.gestioneprenotazioni.entities.Journey;
 import andream.gestioneprenotazioni.enums.JourneyState;
 import andream.gestioneprenotazioni.exceptions.NotFoundException;
 import andream.gestioneprenotazioni.payloads.NewJourneyDTO;
+import andream.gestioneprenotazioni.payloads.NewJourneyStateDTO;
 import andream.gestioneprenotazioni.repositories.JourneyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -47,5 +48,12 @@ public class JourneysService {
     public void findAndDelete(UUID journeyId) {
         Journey found = this.journeyRepo.findById(journeyId).orElseThrow(() -> new NotFoundException("user not found"));
         this.journeyRepo.delete(found);
+    }
+
+    public Journey updateJourneyState(NewJourneyStateDTO payload, UUID journeyId) {
+        Journey found = this.journeyRepo.getById(journeyId);
+        found.setState(payload.state());
+        this.journeyRepo.save(found);
+        return found;
     }
 }

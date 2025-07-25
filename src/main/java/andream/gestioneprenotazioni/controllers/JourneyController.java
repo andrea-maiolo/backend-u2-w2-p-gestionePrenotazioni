@@ -5,6 +5,7 @@ import andream.gestioneprenotazioni.entities.Journey;
 import andream.gestioneprenotazioni.exceptions.ValidationException;
 import andream.gestioneprenotazioni.payloads.NewJourneyDTO;
 import andream.gestioneprenotazioni.payloads.NewJourneyResponseDTO;
+import andream.gestioneprenotazioni.payloads.NewJourneyStateDTO;
 import andream.gestioneprenotazioni.services.JourneysService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -56,7 +57,30 @@ public class JourneyController {
 
     @DeleteMapping("/{journeyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable UUID employeeId) {
-        this.journeysService.findAndDelete(employeeId);
+    public void deleteJourney(@PathVariable UUID journeyId) {
+        this.journeysService.findAndDelete(journeyId);
     }
+
+
+    @PatchMapping("/{journeyId}/state")
+    public Journey statusUpdate(@PathVariable UUID journeyId, @RequestBody @Validated NewJourneyStateDTO payload,
+                                BindingResult validationResult) {
+
+        if (validationResult.hasErrors()) {
+            throw new ValidationException(validationResult.getFieldErrors()
+                    .stream()
+                    .map(fe -> fe.getDefaultMessage())
+                    .toList()
+            );
+        } else {
+            try {
+                return this.journeysService.updateJourneyState(payload, journeyId);
+            } catch (Exception e) {
+                System.out.println("Error in controller: " + e.getMessage());
+                e.printStackTrace();
+                throw e;
+            }
+        }
+    }
+
 }
