@@ -33,7 +33,11 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.CREATED)
     public NewEmployeeResponceDTO save(@RequestBody @Validated NewEmployeeDTO payload, BindingResult validationResult) {
         if (validationResult.hasErrors()) {
-            throw new ValidationException("da finire");
+            throw new ValidationException(validationResult.getFieldErrors()
+                    .stream()
+                    .map(fe -> fe.getDefaultMessage())
+                    .toList()
+            );
         } else {
             Employee newEmployee = this.employeesService.save(payload);
             return new NewEmployeeResponceDTO(newEmployee.getId());

@@ -32,7 +32,7 @@ public class EmployeesService {
 
     public Page<Employee> getAll(int pageNumber, int pageSize, String sort) {
         if (pageSize > 10) pageSize = 10;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sort).descending());
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sort).ascending());
         return this.employeeRepo.findAll(pageable);
     }
 

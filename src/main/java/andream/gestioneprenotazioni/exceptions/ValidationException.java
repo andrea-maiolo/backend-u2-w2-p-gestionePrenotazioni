@@ -1,7 +1,16 @@
 package andream.gestioneprenotazioni.exceptions;
 
+import lombok.Getter;
+
+import java.util.List;
+
+@Getter
 public class ValidationException extends RuntimeException {
-    public ValidationException(String message) {
-        super(message);
+
+    private List<String> errorList;
+
+    public ValidationException(List<String> errorList) {
+        super("validation errors");
+        this.errorList = errorList;
     }
 }
