@@ -4,6 +4,7 @@ package andream.gestioneprenotazioni.services;
 import andream.gestioneprenotazioni.entities.Employee;
 import andream.gestioneprenotazioni.entities.Journey;
 import andream.gestioneprenotazioni.entities.Reservation;
+import andream.gestioneprenotazioni.exceptions.BadRequestException;
 import andream.gestioneprenotazioni.exceptions.NotFoundException;
 import andream.gestioneprenotazioni.payloads.NewReservationDTO;
 import andream.gestioneprenotazioni.repositories.ReservationRepo;
@@ -27,6 +28,12 @@ public class ReservationsService {
     private EmployeesService employeesService;
 
     public Reservation save(NewReservationDTO payload) {
+        boolean employeeAlreadyBusy = this.reservationRepo.findByEmployeeNameAndRequestDate(payload.employeeId(), payload.requestDate()).isPresent();
+
+        if (employeeAlreadyBusy) {
+            throw new BadRequestException("employee already as a booked journey for this date");
+        }
+
         Employee resEm = this.employeesService.getByID(payload.employeeId());
         Journey resJ = this.journeysService.getByID(payload.journeyId());
 
