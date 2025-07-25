@@ -5,19 +5,26 @@ import andream.gestioneprenotazioni.exceptions.BadRequestException;
 import andream.gestioneprenotazioni.exceptions.NotFoundException;
 import andream.gestioneprenotazioni.payloads.NewEmployeeDTO;
 import andream.gestioneprenotazioni.repositories.EmployeeRepo;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 public class EmployeesService {
     @Autowired
     private EmployeeRepo employeeRepo;
+
+    @Autowired
+    private Cloudinary imgUploader;
 
     public Employee save(NewEmployeeDTO payload) {
         this.employeeRepo.findByEmail(payload.email()).ifPresent(e -> {
@@ -66,16 +73,14 @@ public class EmployeesService {
     }
 
 
-    //patch
-//        public String uploadAvatar(MultipartFile file) {
-//            try {
-//                Map result = imgUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-//                String imageURL = (String) result.get("url"); // Dalla risposta di Cloudinary leggo l'url.
-//                // ... Qua dovreste aggiornare l'avatar dell'utente a DB!
-//                return imageURL;
-//            } catch (Exception e) {
-//                throw new BadRequestException("Ci sono stati problemi nel salvataggio del file!");
-//            }
-//        }
+    public String uploadAvatar(MultipartFile file) {
+        try {
+            Map result = imgUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            String imageUrl = (String) result.get("url");
+            return imageUrl;
+        } catch (Exception e) {
+            throw new BadRequestException("Ci sono stati problemi nel salvataggio del file!");
+        }
+    }
 
 }

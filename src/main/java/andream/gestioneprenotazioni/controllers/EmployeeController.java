@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -60,17 +61,13 @@ public class EmployeeController {
         this.employeesService.findAndDelete(employeeId);
     }
 
-//
-//        @PatchMapping("/{userId}/avatar")
-//        public String uploadImage(@RequestParam("avatar") MultipartFile file) {
-//            // "avatar" deve corrispondere ESATTAMENTE al campo del FormData nel quale il frontend inserirà l'immagine
-//            // Se non corrisponde non troverò il file
-//            System.out.println(file.getOriginalFilename());
-//            System.out.println(file.getSize());
-//            return this.usersService.uploadAvatar(file);
-//
-//        }
-//    }
+
+    @PatchMapping("/{employeeId}/avatar")
+    public String uploadImage(@RequestParam("avatar") MultipartFile file) {
+        System.out.println(file.getOriginalFilename());
+        System.out.println(file.getSize());
+        return this.employeesService.uploadAvatar(file);
+    }
 
 
 }
