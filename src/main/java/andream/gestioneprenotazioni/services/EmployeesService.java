@@ -72,14 +72,17 @@ public class EmployeesService {
         this.employeeRepo.delete(found);
     }
 
-
-    public String uploadAvatar(MultipartFile file) {
+    //changed after 25/07/2025 17:00
+    public String uploadAvatar(MultipartFile file, UUID employeeId) {
+        Employee found = getByID(employeeId);
         try {
             Map result = imgUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
             String imageUrl = (String) result.get("url");
+            found.setAvatarUrl(imageUrl);
+            this.employeeRepo.save(found);
             return imageUrl;
         } catch (Exception e) {
-            throw new BadRequestException("Ci sono stati problemi nel salvataggio del file!");
+            throw new BadRequestException("image not saved, sorry");
         }
     }
 

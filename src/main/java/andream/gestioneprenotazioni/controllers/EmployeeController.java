@@ -63,10 +63,8 @@ public class EmployeeController {
 
 
     @PatchMapping("/{employeeId}/avatar")
-    public String uploadImage(@RequestParam("avatar") MultipartFile file) {
-        System.out.println(file.getOriginalFilename());
-        System.out.println(file.getSize());
-        return this.employeesService.uploadAvatar(file);
+    public String uploadImage(@RequestParam("avatar") MultipartFile file, @PathVariable UUID employeeId) {
+        return this.employeesService.uploadAvatar(file, employeeId);
     }
 
 
