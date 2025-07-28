@@ -2,10 +2,11 @@ package andream.gestioneprenotazioni.controllers;
 
 
 import andream.gestioneprenotazioni.entities.Journey;
+import andream.gestioneprenotazioni.exceptions.BadRequestException;
 import andream.gestioneprenotazioni.exceptions.ValidationException;
 import andream.gestioneprenotazioni.payloads.NewJourneyDTO;
 import andream.gestioneprenotazioni.payloads.NewJourneyResponseDTO;
-import andream.gestioneprenotazioni.payloads.NewJourneyStateDTO;
+import andream.gestioneprenotazioni.payloads.StateDTO;
 import andream.gestioneprenotazioni.services.JourneysService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -63,24 +64,17 @@ public class JourneyController {
 
 
     @PatchMapping("/{journeyId}/state")
-    public Journey statusUpdate(@PathVariable UUID journeyId, @RequestBody @Validated NewJourneyStateDTO payload,
+    public Journey statusUpdate(@PathVariable UUID journeyId, @RequestBody @Validated StateDTO payload,
                                 BindingResult validationResult) {
-
-        if (validationResult.hasErrors()) {
-            throw new ValidationException(validationResult.getFieldErrors()
-                    .stream()
-                    .map(fe -> fe.getDefaultMessage())
-                    .toList()
-            );
-        } else {
-            try {
-                return this.journeysService.updateJourneyState(payload, journeyId);
-            } catch (Exception e) {
-                System.out.println("Error in controller: " + e.getMessage());
-                e.printStackTrace();
-                throw e;
-            }
+        if (validationResult.hasErrors()) throw new BadRequestException("something went wrong");
+        try {
+            return this.journeysService.updateJourneyState(payload, journeyId);
+        } catch (Exception e) {
+            System.out.println("Error in controller: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
         }
+
     }
 
 }

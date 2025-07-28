@@ -2,9 +2,10 @@ package andream.gestioneprenotazioni.services;
 
 import andream.gestioneprenotazioni.entities.Journey;
 import andream.gestioneprenotazioni.enums.JourneyState;
+import andream.gestioneprenotazioni.exceptions.BadRequestException;
 import andream.gestioneprenotazioni.exceptions.NotFoundException;
 import andream.gestioneprenotazioni.payloads.NewJourneyDTO;
-import andream.gestioneprenotazioni.payloads.NewJourneyStateDTO;
+import andream.gestioneprenotazioni.payloads.StateDTO;
 import andream.gestioneprenotazioni.repositories.JourneyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class JourneysService {
@@ -50,10 +53,56 @@ public class JourneysService {
         this.journeyRepo.delete(found);
     }
 
-    public Journey updateJourneyState(NewJourneyStateDTO payload, UUID journeyId) {
+//    public Journey updateJourneyState(StateDTO payload, UUID journeyId) {
+//        Journey found = this.journeyRepo.getById(journeyId);
+//        System.out.println("=====================now==========");
+//        System.out.println(JourneyState.valueOf(payload.state().toUpperCase()));
+//        try {
+//            JourneyState newState = JourneyState.valueOf(payload.state().toUpperCase());
+//            found.setState(newState);
+//            this.journeyRepo.save(found);
+//            return found;
+//        } catch (IllegalArgumentException ex) {
+//            // More specific error message with valid states
+//            String validStates = Arrays.stream(JourneyState.values())
+//                    .map(Enum::name)
+//                    .collect(Collectors.joining(", "));
+//            throw new BadRequestException("Invalid state '" + payload.state() +
+//                    "'. Valid states are: " + validStates);
+//        }
+//    }
+
+
+    public Journey updateJourneyState(StateDTO payload, UUID journeyId) {
         Journey found = this.journeyRepo.getById(journeyId);
-        found.setState(payload.state());
-        this.journeyRepo.save(found);
-        return found;
+
+        try {
+            String stateString = payload.state().toUpperCase();
+            System.out.println("=====================now==========");
+            System.out.println("Attempting to convert state: " + stateString);
+
+            JourneyState newState = JourneyState.valueOf(stateString);
+            System.out.println("Successfully converted to: " + newState);
+
+            found.setState(newState);
+            Journey saved = this.journeyRepo.save(found);
+            System.out.println("Successfully saved journey with new state");
+            return saved;
+
+        } catch (IllegalArgumentException ex) {
+            // More specific error message with valid states
+            String validStates = Arrays.stream(JourneyState.values())
+                    .map(Enum::name)
+                    .collect(Collectors.joining(", "));
+            System.out.println("Invalid state error. Input: " + payload.state() + ", Valid states: " + validStates);
+            throw new BadRequestException("Invalid state '" + payload.state() +
+                    "'. Valid states are: " + validStates);
+        } catch (Exception ex) {
+            System.out.println("Unexpected error: " + ex.getClass().getSimpleName() + " - " + ex.getMessage());
+            ex.printStackTrace();
+            throw ex;
+        }
     }
+
+
 }
