@@ -74,7 +74,6 @@ public class JourneyController {
             e.printStackTrace();
             throw e;
         }
-
     }
 
 }

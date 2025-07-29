@@ -78,19 +78,12 @@ public class JourneysService {
 
         try {
             String stateString = payload.state().toUpperCase();
-            System.out.println("=====================now==========");
-            System.out.println("Attempting to convert state: " + stateString);
-
             JourneyState newState = JourneyState.valueOf(stateString);
-            System.out.println("Successfully converted to: " + newState);
-
             found.setState(newState);
             Journey saved = this.journeyRepo.save(found);
-            System.out.println("Successfully saved journey with new state");
             return saved;
 
         } catch (IllegalArgumentException ex) {
-            // More specific error message with valid states
             String validStates = Arrays.stream(JourneyState.values())
                     .map(Enum::name)
                     .collect(Collectors.joining(", "));
@@ -103,6 +96,5 @@ public class JourneysService {
             throw ex;
         }
     }
-
 
 }
